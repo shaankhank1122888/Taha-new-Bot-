@@ -10,7 +10,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 5000;
 
 // Serve the index.html file
 app.get('/', function (req, res) {
@@ -18,7 +18,7 @@ app.get('/', function (req, res) {
 });
 
 // Start the server and add error handling
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     logger(`Server is running on port ${port}...`, "[ Starting ]");
 }).on('error', (err) => {
     if (err.code === 'EACCES') {
@@ -38,45 +38,24 @@ global.countRestart = global.countRestart || 0;
 function startBot(message) {
     if (message) logger(message, "[ Starting ]");
 
-    const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "RDX.js"], {
+    const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "Shaan-Khan-K.js"], {
         cwd: __dirname,
         stdio: "inherit",
         shell: true
     });
 
-    // Add more detailed error logging
-    child.on("error", (error) => {
-        logger(`Bot process error: ${error.stack || error.message}`, "[ Error ]");
+    child.on("close", (codeExit) => {
+        if (codeExit !== 0 && global.countRestart < 5) {
+            global.countRestart += 1;
+            logger(`Bot exited with code ${codeExit}. Restarting... (${global.countRestart}/5)`, "[ Restarting ]");
+            startBot();
+        } else {
+            logger(`Bot stopped after ${global.countRestart} restarts.`, "[ Stopped ]");
+        }
     });
 
-    // Add stdout and stderr handling for better debugging
-    if (child.stdout) {
-        child.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-        });
-    }
-
-    if (child.stderr) {
-        child.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
-        });
-    }
-
-    child.on("close", (codeExit) => {
-        if (codeExit !== 0) {
-            logger(`Bot exited with code ${codeExit}`, "[ Exit ]");
-
-            if (global.countRestart < 5) {
-                global.countRestart += 1;
-                logger(`Restarting... (${global.countRestart}/5)`, "[ Restarting ]");
-                startBot();
-            } else {
-                logger(`Bot stopped after ${global.countRestart} restarts.`, "[ Stopped ]");
-                logger("To see detailed errors, check the logs above or run the bot with 'node Shaan-Khan-K.js' directly", "[ Debug ]");
-            }
-        } else {
-            logger("Bot process exited with code 0 (normal exit)", "[ Exit ]");
-        }
+    child.on("error", (error) => {
+        logger(`An error occurred: ${JSON.stringify(error)}`, "[ Error ]");
     });
 };
 
@@ -84,29 +63,6 @@ function startBot(message) {
 //========= Check update from Github =========//
 ////////////////////////////////////////////////
 
-// Load package.json info locally instead of from GitHub
-try {
-    const packageInfo = require('./package.json');
-    logger(packageInfo.name, "[ NAME ]");
-    logger(`Version: ${packageInfo.version}`, "[ VERSION ]");
-    logger(packageInfo.description, "[ DESCRIPTION ]");
-
-    // Try to check for updates, but don't stop the bot if it fails
-    axios.get("https://raw.githubusercontent.com/codedbypriyansh/Priyansh-Bot/main/package.json")
-        .then((res) => {
-            // Only log if successful, don't stop the bot if there's an error
-            if (res.data && res.data.version) {
-                logger(`Remote version: ${res.data.version}`, "[ UPDATE INFO ]");
-            }
-        })
-        .catch((err) => {
-            // Just log the error but continue with bot startup
-            logger(`Update check failed: ${err.message}`, "[ Update Error ]");
-        });
-} catch (err) {
-    // If local package.json can't be read, just log and continue
-    logger(`Failed to load package info: ${err.message}`, "[ Error ]");
-}
 
 // Start the bot
 startBot();
