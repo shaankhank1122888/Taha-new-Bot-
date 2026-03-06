@@ -1,19 +1,28 @@
 module.exports.config = {
-  name: "goiadmin",
+  name: "ADMIN",
   version: "1.0.0",
   hasPermssion: 0,
-  credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭",
-  description: "Bot will rep ng tag admin or rep ng tagbot ",
-  commandCategory: "Other",
+  credits: "SHAAN BABU",
+  description: "THIS BOT WAS MADE BY MR SHAAN BABU",
+  commandCategory: "ADMIN MENTION",
   usages: "",
   cooldowns: 1
 };
 module.exports.handleEvent = function({ api, event }) {
   if (event.senderID !== "100016828397863") {
-    var aid = ["100016828397863"];
+];
     for (const id of aid) {
     if ( Object.keys(event.mentions) == id) {
-      var msg = ["Wo Busy H mujhe Bolo Kya Bolna H?", "Kya Hua Boss ko q Bula Rhe Ho?", "Wo Shayad Busy hoga", "Shaan Toh Chala gaya"];
+      var msg = ["Arey yaar mujhse baat karo, boss ko kyun bula rahe ho 🙄"
+"Kya hua, mere boss ko kyun bula rahe ho?"
+"Mere boss shayad busy hain."
+"Arey yaar kyun mere boss ko tang kar rahe ho?"
+"Mera boss abhi so rahe honge."
+"Lagta hai mera boss babu sona karne mein busy hai 🤔"
+"Kya kaam hai mujhe batao, main boss ko bata dunga."
+"Mere boss shayad abhi offline hain."
+"Mere boss abhi busy hain 😐✌️
+"];
       return api.sendMessage({body: msg[Math.floor(Math.random()*msg.length)]}, event.threadID, event.messageID);
     }
     }}
