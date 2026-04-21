@@ -32,7 +32,7 @@ module.exports.handleEvent = async ({ api, event, global, client }) => {
     if (isEnable === "true") {
         const dipto2 = event.body ? event.body.toLowerCase() : '';
 
-        // 𝐒𝐇𝐀𝐀𝐍 𝐁𝐎𝐓 ====="
+        // 𝐓𝐀𝐇𝐀 𝐁𝐎𝐓 ====="
         if (dipto2.indexOf("prefix") === 0) {
             
             let d1PInfo;
@@ -57,10 +57,10 @@ module.exports.handleEvent = async ({ api, event, global, client }) => {
 𝐓𝐈𝐌𝐄 ➢${time}
 𝐆𝐑𝐎𝐔𝐏 𝐍𝐀𝐌𝐄
 ${diptoName}
-𝐎𝐖𝐍𝐄𝐑➢ 𝐒𝐇𝐀𝐀𝐍 𝐊𝐇𝐀𝐍
-𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ━➢ 𝐒𝐇𝐀𝐀𝐍 𝐃𝐑`
+𝐎𝐖𝐍𝐄𝐑➢ 𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍
+𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ━➢ 𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍 `
 
-            const imgur = ["https://i.imgur.com/P0VqFW2.jpeg"];
+            const imgur = ["https://i.imgur.com/1tUVG85.jpeg"];
             const link = imgur[Math.floor(Math.random() * imgur.length)];
 
             let filename;
