@@ -63,7 +63,7 @@ module.exports.handleEvent = async function({ api, event, args, Threads, Users }
    };
 
    if ((event.body.toLowerCase() == "owner") || (event.body.toLowerCase() == "Owner")) {
-     return api.sendMessage("💝🥀𝐎𝐖𝐍𝐄𝐑:- ☞𝖘𝖍𝖆𝖆𝖓 𝖐𝖍𝖆𝖓☜ 💫\n🖤𝚈𝚘𝚞 𝙲𝚊𝚗 𝙲𝚊𝚕𝚕 𝙷𝚒𝚖 𝕊ℍ𝔸𝔸ℕ🖤\n😳𝐇𝐢𝐬 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐢𝐝🤓:- https://www.facebook.com/profile.php?id=100016828397863\n👋For Any Kind Of Help Contact On Telegram  Username 👉 @Shaankhank335😇", threadID);
+     return api.sendMessage("💝🥀𝐎𝐖𝐍𝐄𝐑:- ☞𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍☜ 💫\n🖤𝚈𝚘𝚞 𝙲𝚊𝚗 𝙲𝚊𝚕𝚕 𝙷𝚒𝚖 𝐓𝐀𝐇𝐀🖤\n😳𝐇𝐢𝐬 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 𝐢𝐝🤓:- https://www.facebook.com/profile.php?id=100085636015827\n👋For Any Kind Of Help Contact On Telegram  Username 👉 @😇", threadID);
    };
 
    if ((event.body.toLowerCase() == "tumhe banaya kon hai") || (event.body.toLowerCase() == "tumko banaya kisne")) {
@@ -236,14 +236,14 @@ module.exports.handleEvent = async function({ api, event, args, Threads, Users }
     var msg = {
     body: `🕊️🥀${name} 🥀🕊️
 
-❖•S━━━━━💞━━━━━A•❖,
+❖•━━━━━💞━━━━━•❖,
 
 
 ${rand}                                        
 
-𝗖𝗿𝗲𝗱𝗶𝘁𝘀:𒁍≛⃝𝑺𝑯𝑨𝑨𝑵 𝑲𝑯𝑨𝑵 𝑲 ❥||ㅎ
+𝗖𝗿𝗲𝗱𝗶𝘁𝘀:𒁍≛⃝𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍 ❥||ㅎ
 
-❖•S━━━━━💞━━━━━A•❖`
+❖•━━━━━💞━━━━━•❖`
   }
   return api.sendMessage(msg, threadID, messageID);
 };
