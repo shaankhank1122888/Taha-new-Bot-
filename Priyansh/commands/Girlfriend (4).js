@@ -27,7 +27,7 @@ module.exports.config = {
 protectCredits(module.exports.config);
 
 // 🔑 GROQ API KEY
-const GROQ_API_KEY = "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"; 
+const GROQ_API_KEY = "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"; 
 
 // 🧠 TEMPORARY MEMORY
 const chatMemory = {};
@@ -39,6 +39,7 @@ Creator & Owner: Taha Khan 💞
 Language: Reply ONLY in English or Roman Urdu. Strictly NO Hindi script.
 Vibe: Talk like a loving boyfriend. Caring, romantic, and playful.
 Style: Keep replies 1-2 lines short. Emojis are mandatory 🙂❤️😌.
+apna beta nhi bolna,srf janu bolna ha.
 `;
 
 module.exports.run = () => {};
