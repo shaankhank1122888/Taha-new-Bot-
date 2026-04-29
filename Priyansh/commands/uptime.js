@@ -1,66 +1,73 @@
-const os = require('os');
+global.client = global.client || {};
+global.client.timeStart = global.client.timeStart || Date.now();
 
 module.exports.config = {
   name: "upt",
-  version: "1.0.3",
+  version: "1.2.0",
   hasPermssion: 0,
-  credits: "SHAAN KHAN",
-  description: "Display system uptime with dynamic owner name",
+  credits: "TAHA KHAN",
+  description: "Uptime | Prefix + Non-Prefix",
   commandCategory: "system",
-  usages: "upt",
+  usages: "upt / .upt / !upt",
   cooldowns: 5
 };
 
-module.exports.handleEvent = async ({ api, event, Users }) => {
-  if (!event.body) return;
-
-  if (event.body.toLowerCase().indexOf("upt") == 0) {
-    const time = process.uptime(),
-          gio = Math.floor(time / (60 * 60)),
-          phut = Math.floor((time % (60 * 60)) / 60),
-          giay = Math.floor(time % 60);
-
-    const currentDate = new Date();
-    
-    // Time formatting for Asia/Karachi
-    const formattedTime = currentDate.toLocaleTimeString('en-US', { 
-      hour12: true, 
-      timeZone: 'Asia/Karachi' 
-    });
-    const formattedDate = currentDate.toLocaleDateString('en-GB', { 
-      timeZone: 'Asia/Karachi' 
-    });
-    const formattedDay = currentDate.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      timeZone: 'Asia/Karachi' 
-    });
-
-    // Dynamic Owner Name Fetching
-    // Config file se pehla admin ID lega, agar nahi mila to default credits dikhayega
-    const adminID = global.config.ADMINBOT[0]; 
-    let ownerName = "Admin";
-    try {
-        ownerName = await Users.getNameUser(adminID);
-    } catch (e) {
-        ownerName = "TAHA KHAN"; // Fallback name
-    }
-
-    const totalCommands = global.client ? global.client.commands.size : "68";
-
-    const responseMessage = `╭─────────────────────────────╮\n` +
-                            `│        🎉 ✧ 𝗨𝗣𝗧𝗜𝗠𝗘 ✧ 😉  │\n` +
-                            `╰─────────────────────────────╯\n\n` +
-                            `✰ 𝗥𝗨𝗡 ➪ ${gio}ʜ ${phut}ᴍ ${giay}ꜱ ✅\n` +
-                            `✰ 𝗧𝗜𝗠𝗘 ➪ ${formattedTime} ⏰\n` +
-                            `✰ 𝗗𝗔𝗧𝗘 ➪ ${formattedDate} 📅\n` +
-                            `✰ 𝗗𝗔𝗬 ➪ ${formattedDay} 🗓️\n` +
-                            `✰ 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀 ➪ ${totalCommands} 📊\n` +
-                            `✰ 𝗢𝘄𝗻𝗲𝗿 ➪ ${ownerName} 👑\n\n` +
-                            `┗━━━━━━━━━━━━━━━━━━━━━━━┛\n` +
-                            `𝗠𝗔𝗗𝗘 𝗕𝗬 ❤️‍🔥 𝗧𝗔𝗛𝗔 𝗞𝗛𝗔𝗡`;
-
-    return api.sendMessage(responseMessage, event.threadID, event.messageID);
-  }
+// NON-PREFIX
+module.exports.handleEvent = async ({ api, event }) => {
+  if (!event.body || typeof event.body !== "string") return;
+  if (event.body.toLowerCase().trim() !== "upt") return;
+  sendUptime(api, event);
 };
 
-module.exports.run = () => {};
+// PREFIX
+module.exports.run = async ({ api, event }) => {
+  sendUptime(api, event);
+};
+
+// FUNCTION
+function sendUptime(api, event) {
+  const uptime = Date.now() - global.client.timeStart;
+
+  const days = Math.floor(uptime / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((uptime / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((uptime / (1000 * 60)) % 60);
+  const seconds = Math.floor((uptime / 1000) % 60);
+
+  const now = new Date();
+
+  const time = now.toLocaleTimeString("en-IN", {
+    hour12: true,
+    timeZone: "Asia/Karachi"
+  });
+
+  const date = now.toLocaleDateString("en-IN", {
+    timeZone: "Asia/Karachi"
+  });
+
+  const day = now.toLocaleDateString("en-IN", {
+    weekday: "long",
+    timeZone: "Asia/Karachi"
+  });
+
+  const commandsCount = global.client.commands
+    ? global.client.commands.size
+    : "N/A";
+
+  const owner = "TAHA KHAN";
+
+  const message = `
+╭─────────────────────────────╮
+│ 🎉 ✧ 𝗨𝗣𝗧𝗜𝗠𝗘 ✧ 😉 │
+╰─────────────────────────────╯
+✰ 𝗥𝗨𝗡 ➪ ${days}d ${hours}h ${minutes}m ${seconds}s ✅
+✰ 𝗧𝗜𝗠𝗘 ➪ ${time} ⏰
+✰ 𝗗𝗔𝗧𝗘 ➪ ${date} 📅
+✰ 𝗗𝗔𝗬 ➪ ${day} 🗓️
+✰ 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀 ➪ ${commandsCount} 📊
+✰ 𝗢𝘄𝗻𝗲𝗿 ➪ ${owner} 👑
+┗━━━━━━━━━━━━━━━━━━━━━━━┛
+𝗠𝗔𝗗𝗘 𝗕𝗬 ❤️‍🔥 ❤️‍🔥 𝗧𝗔𝗛𝗔 𝗞𝗛𝗔𝗡
+`;
+
+  api.sendMessage(message, event.threadID, event.messageID);
+}
