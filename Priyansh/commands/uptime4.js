@@ -7,7 +7,7 @@ const path = require('path');
 
 module.exports = {
   config: {
-    name: "uptime",
+    name: "uptime4",
     version: "3.5",
     role: 0,
     author: "xalman",
@@ -41,9 +41,9 @@ module.exports = {
       const dbStatus = mongoose.connection.readyState === 1 ? "Connected" : "Disconnected";
       const dbStatusColor = mongoose.connection.readyState === 1 ? "#00ff88" : "#ff3366";
       
-      const timeNow = moment.tz("Asia/Dhaka").format("hh:mm:ss A");
-      const dateNow = moment.tz("Asia/Dhaka").format("DD/MM/YYYY");
-      const timezone = "Asia/Dhaka (GMT+6)";
+      const timeNow = moment.tz("Asia/Karachi").format("hh:mm:ss A");
+      const dateNow = moment.tz("Asia/Karachi").format("DD/MM/YYYY");
+      const timezone = "Asia/Karachi (GMT+6)";
       
       const latency = Date.now() - event.timestamp;
       
@@ -324,7 +324,7 @@ async function generateUptimeImage(data) {
   ctx.fillRect(0, height - 40, width, 40);
   ctx.font = '13px "Arial"';
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.fillText('© Create by xalman | All Systems Operational', 50, height - 15);
+  ctx.fillText('© Create by TAHA KHAN| All Systems Operational', 50, height - 15);
   ctx.fillText(`Generated: ${moment().format('HH:mm:ss')}`, width - 200, height - 15);
   
   ctx.globalAlpha = 0.05;
