@@ -1,98 +1,110 @@
 const axios = require('axios');
-const fs = require('fs-extra');
+const fs = require('fs');
 const path = require('path');
-const yts = require('yt-search');
 
 module.exports.config = {
-    name: "song",
-    version: "6.0.0",
-    hasPermssion: 0,
-    credits: "Kashif Raza",
-    description: "Download music from YouTube",
-    commandCategory: "media",
-    usages: ".music [song name]",
-    cooldowns: 5
+  name: 'song',
+  version: '2.0.0',
+  hasPermssion: 0,
+  credits: 'TAHA KHAN',
+  description: 'YouTube se Top 10 songs search karke selection menu deta hai',
+  commandCategory: 'media',
+  usages: '[song name]',
+  cooldowns: 5
 };
 
-const API_BASE = "https://yt-tt.onrender.com";
+module.exports.run = async function({ api, event, args }) {
+  const { threadID, messageID, senderID } = event;
+  const keyword = args.join(" ");
 
-async function downloadAudio(videoUrl) {
-    try {
-        const response = await axios.get(`${API_BASE}/api/youtube/audio`, {
-            params: { url: videoUrl },
-            timeout: 60000,
-            responseType: 'arraybuffer'
-        });
-        
-        if (response.data) {
-            return { success: true, data: response.data };
-        }
-        return null;
-    } catch (err) {
-        console.log("Audio download failed:", err.message);
-        return null;
-    }
-}
+  if (!keyword) {
+    return api.sendMessage("⚠️ Kisi gaane ka naam ya artist likhein!\n\nExample: .song Pasoori", threadID, messageID);
+  }
 
-module.exports.run = async function ({ api, event, args }) {
-    const query = args.join(" ");
-    
-    if (!query) {
-        return api.sendMessage("❌ Please provide a song name", event.threadID, event.messageID);
+  api.sendMessage("🔎 YouTube par search kiya ja raha hai, please wait...", threadID, messageID);
+
+  try {
+    // YouTube Search API for Top 10 results
+    const searchRes = await axios.get(`https://api.samirdev.me/youtube/search?query=${encodeURIComponent(keyword)}`);
+    const results = searchRes.data.results || searchRes.data;
+
+    if (!results || results.length === 0) {
+      return api.sendMessage("❌ Koi song nahi mila, dobara try karein!", threadID, messageID);
     }
 
-    const frames = [
-        "🩵▰▱▱▱▱▱▱▱▱▱ 10%",
-        "💙▰▰▱▱▱▱▱▱▱▱ 25%",
-        "💜▰▰▰▰▱▱▱▱▱▱ 45%",
-        "💖▰▰▰▰▰▰▱▱▱▱ 70%",
-        "💗▰▰▰▰▰▰▰▰▰▰ 100% 😍"
-    ];
+    const top10 = results.slice(0, 10);
+    let msgList = `🎵 **TOP 10 SEARCH RESULTS** 🎵\n\n`;
 
-    const searchMsg = await api.sendMessage(`🔍 Searching: ${query}\n\n${frames[0]}`, event.threadID);
+    top10.forEach((item, index) => {
+      msgList += `[ ${index + 1} ] ${item.title}\n⏱️ Duration: ${item.duration || 'N/A'}\n\n`;
+    });
 
-    try {
-        const searchResults = await yts(query);
-        const videos = searchResults.videos;
-        
-        if (!videos || videos.length === 0) {
-            api.unsendMessage(searchMsg.messageID);
-            return api.sendMessage("❌ No results found", event.threadID, event.messageID);
-        }
+    msgList += `👉 **Download karne ke liye 1 se 10 tak ka number REPLY karein!**\n\n──── •💜• ────»»𝐎𝐖𝐍𝐄𝐑««★𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍★`;
 
-        const video = videos[0];
-        const videoUrl = video.url;
+    return api.sendMessage(msgList, threadID, (err, info) => {
+      if (err) return;
+      
+      // Saving state for handleReply
+      global.client.handleReply.push({
+        name: this.config.name,
+        messageID: info.messageID,
+        author: senderID,
+        songs: top10
+      });
+    }, messageID);
 
-        // Update progress
-        for (let i = 1; i < frames.length; i++) {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            api.editMessage(`🔍 Searching: ${query}\n\n${frames[i]}`, searchMsg.messageID);
-        }
+  } catch (err) {
+    console.error('[ SONG SEARCH ERROR ]:', err);
+    return api.sendMessage("❌ Song search karne mein error aaya hai!", threadID, messageID);
+  }
+};
 
-        api.editMessage(`⏳ Downloading: ${video.title}`, searchMsg.messageID);
+module.exports.handleReply = async function({ api, event, handleReply }) {
+  const { threadID, messageID, body, senderID } = event;
 
-        const audioData = await downloadAudio(videoUrl);
-        
-        if (!audioData || !audioData.success) {
-            api.unsendMessage(searchMsg.messageID);
-            return api.sendMessage("❌ Failed to download audio", event.threadID, event.messageID);
-        }
+  // Check if reply is from the same person who searched
+  if (senderID !== handleReply.author) {
+    return api.sendMessage("⚠️ Yeh menu aapke liye nahi hai, khud .song likh kar search karein!", threadID, messageID);
+  }
 
-        const cachePath = path.join(__dirname, 'cache', `${Date.now()}.mp3`);
-        fs.writeFileSync(cachePath, Buffer.from(audioData.data));
+  const choice = parseInt(body.trim());
 
-        api.unsendMessage(searchMsg.messageID);
+  if (isNaN(choice) || choice < 1 || choice > handleReply.songs.length) {
+    return api.sendMessage(`⚠️ 1 se ${handleReply.songs.length} ke darmiyan number reply karein!`, threadID, messageID);
+  }
 
-        await api.sendMessage({
-            body: `🎵 ${video.title}\n⏱️ Duration: ${video.timestamp}\n👁️ Views: ${video.views}\n📢 Channel: ${video.author.name}`,
-            attachment: fs.createReadStream(cachePath)
-        }, event.threadID, () => {
-            fs.unlinkSync(cachePath);
-        }, event.messageID);
+  const selectedSong = handleReply.songs[choice - 1];
+  const videoUrl = selectedSong.url || `https://www.youtube.com/watch?v=${selectedSong.id}`;
 
-    } catch (error) {
-        console.error('Error:', error);
-        api.unsendMessage(searchMsg.messageID);
-        return api.sendMessage("❌ An error occurred while processing your request", event.threadID, event.messageID);
-    }
+  api.unsendMessage(handleReply.messageID); // Purana list message remove
+  api.sendMessage(`⏳ Option [ ${choice} ] "${selectedSong.title}" download ho raha hai...`, threadID, messageID);
+
+  const cachePath = path.join(__dirname, `song_${Date.now()}.mp3`);
+
+  try {
+    // Download API
+    const downloadRes = await axios.get(`https://api.vyturex.com/ytmp3?url=${encodeURIComponent(videoUrl)}`, {
+      responseType: 'arraybuffer'
+    }).catch(async () => {
+      return await axios.get(`https://api.samirdev.me/youtube/mp3?url=${encodeURIComponent(videoUrl)}`, {
+        responseType: 'arraybuffer'
+      });
+    });
+
+    fs.writeFileSync(cachePath, Buffer.from(downloadRes.data, 'binary'));
+
+    const msg = `🎧 **Playing:** ${selectedSong.title}\n\n──── •💜• ────»»𝐎𝐖𝐍𝐄𝐑««★𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍★`;
+
+    return api.sendMessage({
+      body: msg,
+      attachment: fs.createReadStream(cachePath)
+    }, threadID, () => {
+      if (fs.existsSync(cachePath)) fs.unlinkSync(cachePath);
+    }, messageID);
+
+  } catch (err) {
+    console.error('[ SONG DOWNLOAD ERROR ]:', err);
+    if (fs.existsSync(cachePath)) fs.unlinkSync(cachePath);
+    return api.sendMessage("❌ Song download karne mein issue aaya hai, dobara try karein!", threadID, messageID);
+  }
 };
