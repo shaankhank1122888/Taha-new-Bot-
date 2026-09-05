@@ -3,10 +3,10 @@ global.client.timeStart = global.client.timeStart || Date.now();
 
 module.exports.config = {
   name: "upt",
-  version: "1.2.0",
+  version: "3.0.0",
   hasPermssion: 0,
   credits: "TAHA KHAN",
-  description: "Uptime | Prefix + Non-Prefix",
+  description: "Advanced Matrix Cyberpunk Terminal Dashboard",
   commandCategory: "system",
   usages: "upt / .upt / !upt",
   cooldowns: 5
@@ -30,7 +30,7 @@ function sendUptime(api, event) {
 
   const days = Math.floor(uptime / (1000 * 60 * 60 * 24));
   const hours = Math.floor((uptime / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((uptime / (1000 * 60)) % 60);
+  const minutes = Math.floor((uptime / (1000 * 60) % 60));
   const seconds = Math.floor((uptime / 1000) % 60);
 
   const now = new Date();
@@ -53,21 +53,33 @@ function sendUptime(api, event) {
     ? global.client.commands.size
     : "N/A";
 
+  const ramUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
   const owner = "TAHA KHAN";
 
   const message = `
-╭─────────────────────────────╮
-│ 🎉 ✧ 𝗨𝗣𝗧𝗜𝗠𝗘 ✧ 😉 │
-╰─────────────────────────────╯
-✰ 𝗥𝗨𝗡 ➪ ${days}d ${hours}h ${minutes}m ${seconds}s ✅
-✰ 𝗧𝗜𝗠𝗘 ➪ ${time} ⏰
-✰ 𝗗𝗔𝗧𝗘 ➪ ${date} 📅
-✰ 𝗗𝗔𝗬 ➪ ${day} 🗓️
-✰ 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀 ➪ ${commandsCount} 📊
-✰ 𝗢𝘄𝗻𝗲𝗿 ➪ ${owner} 👑
-┗━━━━━━━━━━━━━━━━━━━━━━━┛
-𝗠𝗔𝗗𝗘 𝗕𝗬 ❤️‍🔥 ❤️‍🔥 𝗧𝗔𝗛𝗔 𝗞𝗛𝗔𝗡
-`;
+╔═════════════════════════════╗
+║  ░█░█░█▀█░▀█▀░▀█▀░█▄█░█▀▀   ║
+║  ░█░█░█▀▀░░█░░░█░░█░█░█▀▀   ║
+║  ░▀▀▀░▀░░░░▀░░░▀░░▀░▀░▀▀▀   ║
+╚═════════════════════════════╝
+ ───[ ☣️ █▓▒░ SYSTEM MATRIX ░▒▓█ ☣️ ]───
 
-  api.sendMessage(message, event.threadID, event.messageID);
+┌───[ ⚡ 𝗦𝗬𝗦𝗧𝗘𝗠 𝗦𝗧𝗔𝗧𝗨𝗦 ]
+├─► 🟢 RUNTIME   :: ${days}d ${hours}h ${minutes}m ${seconds}s
+├─► 📟 STATUS    :: ONLINE [100%]
+└─► 💻 RAM USED  :: ${ramUsage} MB
+
+┌───[ 🕒 𝗧𝗘𝗠𝗣𝗢𝗥𝗔𝗟 𝗗𝗔𝗧𝗔 ]
+├─► ⏰ TIME      :: ${time}
+├─► 📅 DATE      :: ${date}
+└─► 🗓️ DAY       :: ${day}
+
+┌───[ ⚙️ 𝗖𝗢𝗥𝗘 𝗦𝗣𝗘𝗖𝗦 ]
+├─► 📊 COMMANDS  :: ${commandsCount} Loaded
+├─► 🛠️ NODE VER  :: ${process.version}
+└─► 👑 ROOT USER :: ${owner}
+═══════════════════════════════
+[ 🔓 ACCESS GRANTED // DEV: TAHA KHAN ]`;
+
+  api.sendMessage(message.trim(), event.threadID, event.messageID);
 }
