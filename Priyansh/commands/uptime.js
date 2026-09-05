@@ -3,10 +3,10 @@ global.client.timeStart = global.client.timeStart || Date.now();
 
 module.exports.config = {
   name: "upt",
-  version: "3.0.0",
+  version: "4.0.0",
   hasPermssion: 0,
   credits: "TAHA KHAN",
-  description: "Advanced Matrix Cyberpunk Terminal Dashboard",
+  description: "Ultra Cyber Matrix Uptime with Big ASCII Header",
   commandCategory: "system",
   usages: "upt / .upt / !upt",
   cooldowns: 5
@@ -54,32 +54,33 @@ function sendUptime(api, event) {
     : "N/A";
 
   const ramUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-  const owner = "TAHA KHAN";
 
   const message = `
-╔═════════════════════════════╗
-║  ░█░█░█▀█░▀█▀░▀█▀░█▄█░█▀▀   ║
-║  ░█░█░█▀▀░░█░░░█░░█░█░█▀▀   ║
-║  ░▀▀▀░▀░░░░▀░░░▀░░▀░▀░▀▀▀   ║
-╚═════════════════════════════╝
- ───[ ☣️ █▓▒░ SYSTEM MATRIX ░▒▓█ ☣️ ]───
+█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+│  ▀█▀ █▀█ █ █ █▀█   █ █ █ █ █▀█ █▄█ │
+│   █  █▀█ █▀█ █▀█   █▀▄ █▀█ █▀█ █ █ │
+│   ▀  ▀ ▀ ▀ ▀ ▀ ▀   ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ │
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
+──[ ☠️ █▓▒░ SYSTEM OVERRIDE ░▒▓█ ☠️ ]──
 
-┌───[ ⚡ 𝗦𝗬𝗦𝗧𝗘𝗠 𝗦𝗧𝗔𝗧𝗨𝗦 ]
-├─► 🟢 RUNTIME   :: ${days}d ${hours}h ${minutes}m ${seconds}s
-├─► 📟 STATUS    :: ONLINE [100%]
-└─► 💻 RAM USED  :: ${ramUsage} MB
+┌───[ ⚡ 𝗦𝗬𝗦𝗧𝗘𝗠 𝗥𝗨𝗡𝗧𝗜𝗠𝗘 ]
+├─► 🟢 UPTIME   :: ${days}d ${hours}h ${minutes}m ${seconds}s
+├─► ⚡ STATUS   :: ONLINE [100%]
+└─► 📟 RAM USED :: ${ramUsage} MB
 
-┌───[ 🕒 𝗧𝗘𝗠𝗣𝗢𝗥𝗔𝗟 𝗗𝗔𝗧𝗔 ]
-├─► ⏰ TIME      :: ${time}
-├─► 📅 DATE      :: ${date}
-└─► 🗓️ DAY       :: ${day}
+┌───[ 🕒 𝗧𝗜𝗠𝗘 & 𝗗𝗔𝗧𝗘 ]
+├─► ⏰ TIME     :: ${time}
+├─► 📅 DATE     :: ${date}
+└─► 🗓️ DAY      :: ${day}
 
-┌───[ ⚙️ 𝗖𝗢𝗥𝗘 𝗦𝗣𝗘𝗖𝗦 ]
-├─► 📊 COMMANDS  :: ${commandsCount} Loaded
-├─► 🛠️ NODE VER  :: ${process.version}
-└─► 👑 ROOT USER :: ${owner}
-═══════════════════════════════
-[ 🔓 ACCESS GRANTED // DEV: TAHA KHAN ]`;
+┌───[ ⚙️ 𝗖𝗢𝗥𝗘 𝗜𝗡𝗙𝗢 ]
+├─► 📊 COMMANDS :: ${commandsCount} Loaded
+└─► 🛠️ NODE VER :: ${process.version}
+
+===============================
+🔥 ❤️‍🔥 𝗠𝗔𝗗𝗘 𝗕𝗬 𝗧𝗔𝗛𝗔 𝗞𝗛𝗔𝗡 ❤️‍🔥 🔥
+[ 🔓 SYSTEM ACCESS GRANTED v4.0 ]
+===============================`;
 
   api.sendMessage(message.trim(), event.threadID, event.messageID);
 }
