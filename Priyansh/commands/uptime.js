@@ -3,10 +3,10 @@ global.client.timeStart = global.client.timeStart || Date.now();
 
 module.exports.config = {
   name: "upt",
-  version: "4.0.0",
+  version: "5.0.0",
   hasPermssion: 0,
   credits: "TAHA KHAN",
-  description: "Ultra Cyber Matrix Uptime with Big ASCII Header",
+  description: "Mobile-Optimized Cyberpunk Uptime",
   commandCategory: "system",
   usages: "upt / .upt / !upt",
   cooldowns: 5
@@ -56,31 +56,28 @@ function sendUptime(api, event) {
   const ramUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
 
   const message = `
-█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
-│  ▀█▀ █▀█ █ █ █▀█   █ █ █ █ █▀█ █▄█ │
-│   █  █▀█ █▀█ █▀█   █▀▄ █▀█ █▀█ █ █ │
-│   ▀  ▀ ▀ ▀ ▀ ▀ ▀   ▀ ▀ ▀ ▀ ▀ ▀ ▀ ▀ │
-█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
-──[ ☠️ █▓▒░ SYSTEM OVERRIDE ░▒▓█ ☠️ ]──
+┏━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ 👑 𝗧 𝗔 𝗛 𝗔   𝗞 𝗛 𝗔 𝗡 👑 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━┛
+ ──[ ☣️ SYSTEM OVERRIDE ☣️ ]──
 
-┌───[ ⚡ 𝗦𝗬𝗦𝗧𝗘𝗠 𝗥𝗨𝗡𝗧𝗜𝗠𝗘 ]
-├─► 🟢 UPTIME   :: ${days}d ${hours}h ${minutes}m ${seconds}s
-├─► ⚡ STATUS   :: ONLINE [100%]
-└─► 📟 RAM USED :: ${ramUsage} MB
+┌──[ ⚡ 𝗦𝗬𝗦𝗧𝗘𝗠 𝗦𝗧𝗔𝗧𝗨𝗦 ]
+├─► 🟢 UPTIME : ${days}d ${hours}h ${minutes}m ${seconds}s
+├─► ⚡ STATUS : ONLINE
+└─► 📟 RAM    : ${ramUsage} MB
 
-┌───[ 🕒 𝗧𝗜𝗠𝗘 & 𝗗𝗔𝗧𝗘 ]
-├─► ⏰ TIME     :: ${time}
-├─► 📅 DATE     :: ${date}
-└─► 🗓️ DAY      :: ${day}
+┌──[ 🕒 𝗧𝗜𝗠𝗘 & 𝗗𝗔𝗧𝗘 ]
+├─► ⏰ TIME   : ${time}
+├─► 📅 DATE   : ${date}
+└─► 🗓️ DAY    : ${day}
 
-┌───[ ⚙️ 𝗖𝗢𝗥𝗘 𝗜𝗡𝗙𝗢 ]
-├─► 📊 COMMANDS :: ${commandsCount} Loaded
-└─► 🛠️ NODE VER :: ${process.version}
+┌──[ ⚙️ 𝗖𝗢𝗥𝗘 𝗜𝗡𝗙𝗢 ]
+├─► 📊 CMDS   : ${commandsCount} Loaded
+└─► 🛠️ NODE   : ${process.version}
 
-===============================
+==========================
 🔥 ❤️‍🔥 𝗠𝗔𝗗𝗘 𝗕𝗬 𝗧𝗔𝗛𝗔 𝗞𝗛𝗔𝗡 ❤️‍🔥 🔥
-[ 🔓 SYSTEM ACCESS GRANTED v4.0 ]
-===============================`;
+==========================`;
 
   api.sendMessage(message.trim(), event.threadID, event.messageID);
 }
