@@ -6,8 +6,8 @@ const path = require("path");
 module.exports.config = {
   name: "edit",
   version: "1.0.0",
-  hasPermssion: 0,
-  credits: "𝐊𝐀𝐒𝐇𝐈𝐅 𝐑𝐀𝐙𝐀",
+  hasPermssion: 2,
+  credits: "SARDAR RDX",
   description: "Edit images using NanoBanana AI",
   commandCategory: "Media",
   usages: "[prompt] - Reply to an image",
