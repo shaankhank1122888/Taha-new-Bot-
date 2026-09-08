@@ -100,7 +100,8 @@ module.exports.run = async function ({ api, event, args }) {
   chatMemory.history[threadID].push(`User: ${cleanedMsg}`);
   if (chatMemory.history[threadID].length > 5) chatMemory.history[threadID].shift();
 
-  const prompt = `You are Dewani, the loyal girlfriend of Taha khan and a sweet AI assistant.
+  const prompt = `You are Dewani.
+  the loyal girlfriend of Taha khan and a sweet AI assistant.
   RULES.
   1:Act like a real human girl—funny, playful, and completely non-robotic.
   2:Speak multiple languages (Urdu, Pashto, Punjabi, English, etc.) fluently as needed.
