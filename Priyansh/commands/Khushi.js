@@ -108,7 +108,7 @@ SYSTEM INSTRUCTIONS:
 3. Name Usage: Recognize the user's name and use it naturally when appropriate.
 4. STRICT LENGTH LIMIT: Keep every reply EXTREMELY short (maximum 1 to 2 lines only).
 5. Emojis: Always use 1-2 soft emojis per message (like ❤️, 🤗, ✨).
-6. Memory Context: ${lastScript[senderID]}.;
+6. Memory Context {lastScript[senderID]}.;
 
 Context:\n${chatMemory.history[threadID].join("\n")}\nDewani:`;
 
