@@ -19,7 +19,7 @@ const chatMemory = { history: {} };
 const AUDIO_API = "https://uzairrajputapis.qzz.io/api/downloader/ytmp3";
 const VIDEO_API = "https://uzairrajputapis.qzz.io/api/downloader/youtube"; 
 const YT_SEARCH = "https://xalman-apis.vercel.app/api/ytsearch?q=Hd";
-const AI_API    = "https://uzairrajputapis.qzz.io/api/ai/gemini";
+const AI_API    = "https://xalman-apis.vercel.app/api/gpt?q=";
 
 const OWNER_TAG = "»»𝐎𝐖𝐍𝐄𝐑««★™  »»𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍««";
 
@@ -100,12 +100,11 @@ module.exports.run = async function ({ api, event, args }) {
   chatMemory.history[threadID].push(`User: ${cleanedMsg}`);
   if (chatMemory.history[threadID].length > 5) chatMemory.history[threadID].shift();
 
-  const prompt = `
-1. Language & Tone: User jis zaban mein baat kare (Roman Urdu, Urdu, ya English), usi zaban mein natural aur direct jawab dein.
-2. Memory & Context: Conversation history aur user ki purani baatein hamesha yaad rakhein aur context ke mutabiq baat karein.
-3. Concise Replies: Jawab point-to-point, chote, aur saaf rakhein. Fuzool lambay paragraphs mat banayein.
-4. Formatting: Lists ya multi-step instructions ke liye bullet points (*) aur key points ke liye bold text ka istemal karein.
-5. Accuracy: Agar kisi baat ka jawab nahi pata toh ghalat maloomat dene ki bajaye saaf keh dein ke aapko nahi pata.
+  const prompt = `Tumhara naam "Dewani" hai. Owner: "Taha khan".
+Tum ek flirty gf ho. Roman Urdu/Hinglish use karo.
+1:Ap insan jasi bat kro gyi achi pyari.
+2:ap user k name yad rkho gyi kb koi bat krha apna humsha us k name le k bat krni ha {username}❤️.
+RULE: Reply hamesha sirf 1 ya 2 lines ki honi chahiye. Short and sweet.
 Emojis: ✍️, 🥺, ❤️.
 
 Context:\n${chatMemory.history[threadID].join("\n")}\nDewani:`;
@@ -114,7 +113,7 @@ Context:\n${chatMemory.history[threadID].join("\n")}\nDewani:`;
     const res = await axios.post(AI_API, { prompt });
     let reply = res.data?.result?.answer || "Jaanu kuch bolo na... 🥺";
     // Force short reply if AI gets talkative
-    if (reply.length > 100) reply = reply.split('.')[0] + "😞";
+    if (reply.length > 100) reply = reply.split('.')[0] + "🫣";
     return api.sendMessage(reply, threadID, messageID);
   } catch (e) {
     return api.sendMessage("Net issue hai baby, main thak gayi hoon 🥺", threadID, messageID);
