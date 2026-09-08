@@ -19,7 +19,7 @@ const chatMemory = { history: {} };
 const AUDIO_API = "https://uzairrajputapis.qzz.io/api/downloader/ytmp3";
 const VIDEO_API = "https://uzairrajputapis.qzz.io/api/downloader/youtube"; 
 const YT_SEARCH = "https://xalman-apis.vercel.app/api/ytsearch?q=Hd";
-const AI_API    = "https://xalman-apis.vercel.app/api/gpt?q=";
+const AI_API    = "https://uzairrajputapis.qzz.io/api/ai/gemini";
 
 const OWNER_TAG = "»»𝐎𝐖𝐍𝐄𝐑««★™  »»𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍««";
 
