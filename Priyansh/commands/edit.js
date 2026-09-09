@@ -1,155 +1,91 @@
-
-const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 
 module.exports.config = {
-  name: "edit",
+  name: "editor",
   version: "1.0.0",
-  hasPermssion: 2,
-  credits: "SARDAR RDX",
-  description: "Edit images using NanoBanana AI",
-  commandCategory: "Media",
-  usages: "[prompt] - Reply to an image",
-  prefix: true,
-  cooldowns: 10
+  hasPermssion: 0,
+  credits: "TAHA KHAN",
+  description: "AzadX API ke zariye images edit/process karta hai",
+  commandCategory: "image",
+  usages: "[reply to photo / image URL / prompt]",
+  cooldowns: 5
 };
 
-module.exports.run = async ({ api, event, args }) => {
-  const { threadID, messageID, messageReply, type } = event;
+module.exports.run = async function({ api, event, args }) {
+  const { threadID, messageID, type, messageReply } = event;
+  let imageUrl = "";
+  const textInput = args.join(" ");
 
-  if (type !== "message_reply" || !messageReply) {
+  // Attachment / Reply se Image URL pick karna
+  if (type === "message_reply" && messageReply.attachments && messageReply.attachments.length > 0) {
+    if (messageReply.attachments[0].type === "photo") {
+      imageUrl = messageReply.attachments[0].url;
+    }
+  } else if (event.attachments && event.attachments.length > 0 && event.attachments[0].type === "photo") {
+    imageUrl = event.attachments[0].url;
+  } else if (args[0] && args[0].startsWith("http")) {
+    imageUrl = args[0];
+  }
+
+  if (!imageUrl && !textInput) {
     return api.sendMessage(
-      "⚠️ Please reply to an image with your edit prompt!\n\n📝 Usage: edit [prompt]\n\nExample: edit make the cat blue and add sunglasses",
+      "⚠️ **Kisi image par reply karke `.editor` likhein ya photo URL dein!**\n\n" +
+      "📌 **Example:** Photo ka reply karein aur likhein `.editor`",
       threadID,
       messageID
     );
   }
 
-  if (!messageReply.attachments || messageReply.attachments.length === 0) {
-    return api.sendMessage(
-      "❌ The message you replied to doesn't contain any image!\n\nPlease reply to a message with an image.",
-      threadID,
-      messageID
-    );
+  const cacheDir = path.join(__dirname, 'cache');
+  if (!fs.existsSync(cacheDir)) {
+    fs.mkdirSync(cacheDir, { recursive: true });
   }
 
-  const attachment = messageReply.attachments[0];
-  if (attachment.type !== "photo") {
-    return api.sendMessage(
-      "❌ Please reply to an image, not a " + attachment.type + "!",
-      threadID,
-      messageID
-    );
-  }
-
-  const prompt = args.join(" ");
-  if (!prompt) {
-    return api.sendMessage(
-      "❌ Please provide an edit prompt!\n\n📝 Usage: edit [prompt]\n\nExample: edit make the cat blue and add sunglasses",
-      threadID,
-      messageID
-    );
-  }
-
-  const imageUrl = attachment.url;
-
-  const processingMsg = await api.sendMessage(
-    "🎨 Processing your image edit request...\n⏳ This may take a few moments...",
-    threadID
-  );
+  const cachePath = path.join(cacheDir, `editor_${Date.now()}.png`);
+  api.sendMessage("🎨 **Image Editor** process ho raha hai, please wait...", threadID, messageID);
 
   try {
-    const cacheDir = path.join(__dirname, "cache");
-    if (!fs.existsSync(cacheDir)) {
-      fs.mkdirSync(cacheDir);
+    let apiUrl = `https://azadx69x.is-a.dev/api/editor`;
+    const params = [];
+
+    if (imageUrl) params.push(`url=${encodeURIComponent(imageUrl)}`);
+    if (textInput && !args[0].startsWith("http")) params.push(`text=${encodeURIComponent(textInput)}`);
+
+    if (params.length > 0) {
+      apiUrl += `?${params.join('&')}`;
     }
 
-    const cookie = "AEC=AVh_V2iyBHpOrwnn7CeXoAiedfWn9aarNoKT20Br2UX9Td9K-RAeS_o7Sg; HSID=Ao0szVfkYnMchTVfk; SSID=AGahZP8H4ni4UpnFV; APISID=SD-Q2DJLGdmZcxlA/AS8N0Gkp_b9sJC84f; SAPISID=9BY2tOwgEz4dK4dY/Acpw5_--fM7PV-aw4; __Secure-1PAPISID=9BY2tOwgEz4dK4dY/Acpw5_--fM7PV-aw4; __Secure-3PAPISID=9BY2tOwgEz4dK4dY/Acpw5_--fM7PV-aw4; SEARCH_SAMESITE=CgQI354B; SID=g.a0002wiVPDeqp9Z41WGZdsMDSNVWFaxa7cmenLYb7jwJzpe0kW3bZzx09pPfc201wUcRVKfh-wACgYKAXUSARMSFQHGX2MiU_dnPuMOs-717cJlLCeWOBoVAUF8yKpYTllPAbVgYQ0Mr_GyeXxV0076; __Secure-1PSID=g.a0002wiVPDeqp9Z41WGZdsMDSNVWFaxa7cmenLYb7jwJzpe0kW3b_Pt9L1eqcIAVeh7ZdRBOXgACgYKAYESARMSFQHGX2MicAK_Acu_-NCkzEz2wjCHmxoVAUF8yKp9xk8gQ82f-Ob76ysTXojB0076; __Secure-3PSID=g.a0002wiVPDeqp9Z41WGZdsMDSNVWFaxa7cmenLYb7jwJzpe0kW3bUudZTunPKtKbLRSoGKl1dAACgYKAYISARMSFQHGX2MimdzCEq63UmiyGU-3eyZx9RoVAUF8yKrc4ycLY7LGaJUyDXk_7u7M0076";
-    
-    const apiUrl = `https://anabot.my.id/api/ai/geminiOption?prompt=${encodeURIComponent(prompt)}&type=NanoBanana&imageUrl=${encodeURIComponent(imageUrl)}&cookie=${encodeURIComponent(cookie)}&apikey=freeApikey`;
+    let response = await axios.get(apiUrl, { responseType: 'arraybuffer' }).catch(async () => {
+      // Fallback query parameter
+      return await axios.get(`https://azadx69x.is-a.dev/api/editor?image=${encodeURIComponent(imageUrl)}`, { responseType: 'arraybuffer' });
+    });
 
-    const response = await axios.get(apiUrl, {
-      headers: { 'Accept': 'application/json' },
-      timeout: 60000,
-      validateStatus: function (status) {
-        return status < 600; // Accept any status code less than 600
+    // Check JSON error response
+    try {
+      const jsonData = JSON.parse(Buffer.from(response.data).toString('utf-8'));
+      if (jsonData && (jsonData.error || jsonData.message)) {
+        return api.sendMessage(`❌ API Error: ${jsonData.error || jsonData.message}`, threadID, messageID);
       }
-    });
-
-    if (response.status === 500 && response.data?.error) {
-      throw new Error(`API Error: ${response.data.error} - ${response.data.details || 'Server issue'}`);
+    } catch (e) {
+      // Binary image response received
     }
 
-    if (!response.data || !response.data.success) {
-      throw new Error(response.data?.error || "API request failed or returned no data");
-    }
+    fs.writeFileSync(cachePath, Buffer.from(response.data, 'binary'));
 
-    const resultUrl = response.data.data?.result?.url;
-    if (!resultUrl) {
-      throw new Error("No edited image URL returned from API");
-    }
+    const msg = `──── •🎨 IMAGE EDITOR 🎨• ────\n\n✨ **Image Successfully Edited!**\n\n──── •💜• ────»»𝐎𝐖𝐍𝐄𝐑««★𝐓𝐀𝐇𝐀 𝐊𝐇𝐀𝐍★`;
 
-    const fileName = `edit_${Date.now()}.png`;
-    const filePath = path.join(cacheDir, fileName);
-    
-    const imageResponse = await axios({
-      url: resultUrl,
-      method: "GET",
-      responseType: "stream",
-      timeout: 60000
-    });
+    return api.sendMessage({
+      body: msg,
+      attachment: fs.createReadStream(cachePath)
+    }, threadID, () => {
+      if (fs.existsSync(cachePath)) fs.unlinkSync(cachePath);
+    }, messageID);
 
-    const writer = fs.createWriteStream(filePath);
-    imageResponse.data.pipe(writer);
-
-    writer.on("finish", () => {
-      api.unsendMessage(processingMsg.messageID);
-
-      api.sendMessage(
-        {
-          body: `✨ Image edited successfully!\n\n📝 Prompt: ${prompt}\n\n🎨 Powered by NanoBanana AI`,
-          attachment: fs.createReadStream(filePath)
-        },
-        threadID,
-        () => {
-          fs.unlinkSync(filePath);
-        },
-        messageID
-      );
-    });
-
-    writer.on("error", (err) => {
-      console.error("Error downloading edited image:", err);
-      api.unsendMessage(processingMsg.messageID);
-      api.sendMessage(
-        "❌ Failed to download the edited image. Please try again.",
-        threadID,
-        messageID
-      );
-    });
-
-  } catch (error) {
-    console.error("Error in edit command:", error);
-    api.unsendMessage(processingMsg.messageID);
-    
-    let errorMessage = "❌ An error occurred while editing the image.";
-    
-    if (error.message.includes('ENOSPC') || (error.response?.data?.details && error.response.data.details.includes('ENOSPC'))) {
-      errorMessage = "❌ API server is temporarily unavailable (disk space full).\n\n💡 This is an issue with the external API service. Please try again in a few minutes.";
-    } else if (error.response?.status === 500) {
-      errorMessage = "❌ API server error (500). The service may be experiencing issues.\n\n💡 Please try again later.";
-    } else if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
-      errorMessage = "❌ Request timeout. The API is taking too long to respond.\n\n💡 Please try again.";
-    } else if (error.response) {
-      errorMessage += `\n\n📌 API Error: ${error.response.status}`;
-      if (error.response.data?.error) {
-        errorMessage += `\n📝 ${error.response.data.error}`;
-      }
-    } else if (error.message) {
-      errorMessage += `\n\n📌 Error: ${error.message}`;
-    }
-    
-    api.sendMessage(errorMessage, threadID, messageID);
+  } catch (err) {
+    console.error('[ EDITOR ERROR ]:', err);
+    if (fs.existsSync(cachePath)) fs.unlinkSync(cachePath);
+    return api.sendMessage("❌ Image edit karne mein error aaya hai! API down ya busy ho sakti hai.", threadID, messageID);
   }
 };
