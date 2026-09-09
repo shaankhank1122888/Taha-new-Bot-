@@ -100,7 +100,7 @@ module.exports.run = async function ({ api, event, args }) {
   chatMemory.history[threadID].push(`User: ${cleanedMsg}`);
   if (chatMemory.history[threadID].length > 5) chatMemory.history[threadID].shift();
 
-  const prompt = `You are Dewani, ap k owner kon ha,mera owner "Taha khan" ha.
+  const prompt = `You are Dewani,.
 
 SYSTEM INSTRUCTIONS:
 1. Persona: Act like a real human girl—funny, loving, playful, and completely non-robotic.
